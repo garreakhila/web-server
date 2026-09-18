@@ -1,10 +1,9 @@
-//updated unit 2 code
 import express from "express";
-import pagesRouter from "./routes/pages.js";
-import apiRouter from "./routes/api.js";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.set("view engine", "ejs");
+
+const PORT = 3000;
 
 const projects = [
   { name: "Weather app", tag: "javascript" },
@@ -12,76 +11,88 @@ const projects = [
   { name: "Budget tracker", tag: "python" },
 ];
 
-app.use("/", pagesRouter);
-app.use("/api", apiRouter);
+import { join } from "path";
 
-app.use((req, res) => {
-  res.status(404).send("Page not found.");
+app.get("/", (req, res) => {
+  res.sendFile(join(import.meta.dirname, "public", "index.html"));
+});
+
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.send("Hello, web!");
+});
+
+app.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+app.get("/about-me", (req, res) => {
+  res.send("about ME page");
+});
+
+app.get("/contact", (req, res) => {
+  res.send("contacts page");
 });
 
 app.get("/projects", (req, res) => {
   const tag = req.query.tag;
-  // filter `projects` here, based on your decision above
-  const filteredProjects = projects.filter((projects) => project.tag === tag);
-  res.send(filteredProjects);
-});
+  const filteredProjects = projects.filter((project) => project.tag === tag);
+  if (!tag) {
+    res.send(projects);
+  } else if (filteredProjects.length === 0) {
+    res.status(404).send("No projects found with that tag.");
+  } else {
+    res.send(filteredProjects);
+  }
 
-app.get("/projects/:tag", (req, res) => {
-  const tag = req.params.tag;
-  const filteredProjects = projects.filter((projects) => project.tag === tag);
-  res.send(filteredProjects);
+  const entries = [
+    { title: "First Entry", body: "This is the first entry." },
+    { title: "Second Entry", body: "This is the second entry." },
+    { title: "Third Entry", body: "This is the third entry." },
+  ];
+
+  app.get("/entries", (req, res) => {
+    res.render("entries", { title: "My Notes", entries });
+  });
+
+  app.get("/entries/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const entry = entries[id];
+
+    if (!entry) {
+      //res.status(404).render("error", { message: "Entry not found" });
+      res.status(404).send("Entry not found");
+      return;
+    }
+
+    res.render("entries", { title: entry.title, entry });
+  });
+
+  const events = [
+    { title: "Career fair", date: "2026-09-13" },
+    { title: "Hackathon kickoff", date: "2026-09-14" },
+    { title: "Dancing with the stars", date: "2026-09-15" },
+    { title: "Birthday party", date: "2026-09-16" },
+  ];
+
+  app.get("/events", (req, res) => {
+    if (events.length === 0) {
+      // res.status(404).render("error", { message: "No events found" });
+      res.status(404).send("No events scheduled");
+      return;
+    }
+    res.render("events", { events });
+  });
+
+  // if (tag) {
+  //   const filteredProjects = projects.filter((project) => project.tag === tag);
+  //   res.send(filteredProjects);
+  // } else {
+  //   res.send(projects);
+  // }
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Listening on http://localhost:${PORT}`);
 });
-
-// import express from "express";
-
-// const app = express();
-// const PORT = 3000;
-
-// app.get("/", (req, res) => {
-//   res.send("Hello, web!");
-// });
-
-// app.get("/about", (req, res) => {
-//   res.send("ABOUT Attempt!!");
-// });
-
-// app.get("/about-me", (req, res) => {
-//   res.send("about ME page");
-// });
-
-// app.get("/contact", (req, res) => {
-//   res.send("contacts page");
-// });
-
-// // unit 2 exercise
-// // GET /hello/:name responds with Hello, <name>! using a URL parameter
-// app.get("/hello/:name", (req, res) => {
-//   res.send(`Hello, ${req.params.name}!`);
-// });
-
-// app.get("/repeat/:word", (req, res) => {
-//   const word = req.params.word;
-//   res.send(`${word} ${word} ${word}`);
-// });
-
-// app.get("/count", (req, res) => {
-//   const from = req.query.from || "1";
-//   const to = req.query.to || "10";
-//   res.send(`Counting from ${from} to ${to}`);
-// });
-
-// app.get("/api/info", (req, res) => {
-//   res.json({ name: "Akhila", id: "12345:" });
-// });
-
-// app.get("/api/error", (req, res) => {
-//   res.status(400).send("Bad request");
-// });
-
-// app.listen(PORT, () => {
-//   console.log(`Listening on http://localhost:${PORT}`);
-// });
