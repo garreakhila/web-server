@@ -1,0 +1,4 @@
+- Total commits on main: <total from step 2>
+- First commit hash: <hash from step 3>
+- Latest commit hash: <hash from step 6>
+- Summary of changes to views/about.ejs: <one sentence, based on step 5>
