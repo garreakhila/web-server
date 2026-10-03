@@ -1,4 +1,4 @@
-- Total commits on main: <total from step 2>
-- First commit hash: <hash from step 3>
-- Latest commit hash: <hash from step 6>
-- Summary of changes to views/about.ejs: <one sentence, based on step 5>
+- Total commits on main: 8
+- First commit hash: 2ab078b
+- Latest commit hash: 678ecb5
+- Summary of changes to views/about.ejs: I can see all the changes in about.ejs from the beginning to the end where we changed the description of the project in lab 3 commit.
